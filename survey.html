@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Survey - Survey</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #dddddd; /* Changed background color to gray */
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .option {
+            margin-left: 20px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid #007bff;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="radio"]:checked {
+            background-color: #007bff;
+        }
+
+        input[type="radio"]:checked::before {
+            content: "";
+            display: block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #fff;
+            margin: 4px;
+        }
+
+        label {
+            display: inline-block;
+            vertical-align: middle;
+            cursor: pointer;
+        }
+
+        label:hover {
+            color: #007bff;
+        }
+
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #surveyResult {
+            margin-top: 20px;
+        }
+
+        #surveyResult p {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Nutrition Survey</h2>
+    <form id="surveyForm">
+        <div id="surveyQuestions"></div>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="surveyResult"></div>
+
+    <script>
+        const questions = [
+            "How often do you get tired?",
+            "How often do you consume fruits and vegetables?",
+            "How often do you eat fast food or processed snacks?",
+            "How well do you stay hydrated throughout the day?",
+            "How often do you consume protein?",
+            "How often do you workout/exercise?"
+        ];
+
+        const answers = [
+            ["Always", "Occasionally", "Sometimes", "Rarely"],
+            ["Rarely", "Occasionally", "Regularly", "Daily"],
+            ["Regularly", "Occasionally", "Rarely", "Never"],
+            ["Rarely", "Sometimes", "Most of the time", "Always"],
+            ["Rarely", "Occasionally", "Regularly", "Always"],
+            ["Rarely", "Occasionally", "Regularly", "Always"]
+        ];
+
+        function createSurveyQuestions() {
+            const form = document.getElementById("surveyForm");
+            const questionsDiv = document.getElementById("surveyQuestions");
+
+            questions.forEach((question, index) => {
+                const questionDiv = document.createElement("div");
+                questionDiv.classList.add("question");
+                questionDiv.textContent = question;
+
+                answers[index].forEach((answer, answerIndex) => {
+                    const optionDiv = document.createElement("div");
+                    optionDiv.classList.add("option");
+
+                    const input = document.createElement("input");
+                    input.type = "radio";
+                    input.name = `question${index}`;
+                    input.value = answerIndex + 1;
+                    input.required = true;
+
+                    const label = document.createElement("label");
+                    label.textContent = answer;
+
+                    optionDiv.appendChild(input);
+                    optionDiv.appendChild(label);
+
+                    questionDiv.appendChild(optionDiv);
+                });
+
+                questionsDiv.appendChild(questionDiv);
+            });
+        }
+
+        function calculateScore(form) {
+            event.preventDefault();
+            const formData = new FormData(form);
+            let score = 0;
+
+            for (let i = 0; i < questions.length; i++) {
+                const answer = formData.get(`question${i}`);
+                score += parseInt(answer);
+            }
+
+            displayResultAndAdvice(score);
+        }
+
+        function displayResultAndAdvice(score) {
+            const resultDiv = document.getElementById("surveyResult");
+            let advice;
+
+            if (score <= 12) {
+                advice = "Your fitness is poor and you need to make immediate changes to your diet and fitness plan. Start with working out 2-3x a week and running while cutting down junk foods and eating more fruits and vegetables.";
+            } else if (score <= 18) {
+                advice = "You're making some healthy choices, but there's room for improvement. Remember to keep hydrating keep cutting down junk foods and eating more fruits and vegetables. You should also start tracking how much protein you eat per day in order to build adequate muscle.";
+            } else if (score <= 22) {
+                advice = "You're doing well! Continue making healthy choices and staying hydrated. Start to incorporate more training days and start tracking how much calories you eat per day and what you eat to stay balanced.";
+            } else {
+                advice = "Congratulations! You're making excellent choices for your health and well-being. Now that you have the nutrition and fitness part down, focus on how to get stronger and faster while recovering properly and not getting injured.";
+            }
+
+            resultDiv.innerHTML = `<p>Your total score: ${score}</p><p>${advice}</p>`;
+        }
+
+        window.onload = createSurveyQuestions;
+
+        document.getElementById("surveyForm").addEventListener("submit", function(event) {
+            calculateScore(this);
+        });
+    </script>
+</body>
+</html>

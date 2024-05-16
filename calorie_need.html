@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Survey - Calorie Requirement</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        div {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: inline-block;
+            width: 150px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        input[type="number"],
+        select {
+            width: calc(100% - 160px);
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            border-color: #007bff;
+        }
+
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #calorieResult {
+            margin-top: 20px;
+        }
+
+        #calorieResult p {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Calorie Requirement Calculator</h2>
+    <form id="calorieForm">
+        <div>
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+        </div>
+        <div>
+            <label for="heightFeet">Height (Feet):</label>
+            <input type="number" id="heightFeet" name="heightFeet" required>
+        </div>
+        <div>
+            <label for="heightInches">Height (Inches):</label>
+            <input type="number" id="heightInches" name="heightInches" required>
+        </div>
+        <div>
+            <label for="weight">Weight (Pounds):</label>
+            <input type="number" id="weight" name="weight" required>
+        </div>
+        <button type="submit">Calculate</button>
+    </form>
+    <div id="calorieResult"></div>
+
+    <script>
+        const calorieForm = document.getElementById("calorieForm");
+        const calorieResult = document.getElementById("calorieResult");
+
+        calorieForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const gender = document.getElementById("gender").value;
+            const heightFeet = parseFloat(document.getElementById("heightFeet").value);
+            const heightInches = parseFloat(document.getElementById("heightInches").value);
+            const weight = parseFloat(document.getElementById("weight").value);
+
+            const heightInInches = (heightFeet * 12) + heightInches;
+            let bmr;
+
+            if (gender === "male") {
+                // Men's BMR formula:
+                bmr = (66 + (6.2 * weight) + (12.7 * heightInInches)) * 1.55;
+            } else {
+                // Women's BMR formula:
+                bmr = (655 + (4.35 * weight) + (4.7 * heightInInches)) * 1.55;
+            }
+
+            const bmrForLoss = gender === "male" ? bmr * 0.75 : bmr * 0.75;
+            const bmrForGain = bmr * 1.25;
+
+            calorieResult.innerHTML = `
+                <p>Your estimated Basal Metabolic Rate (BMR) is approximately ${bmr.toFixed(2)} calories per day.</p>
+                <p>To lose weight consistently, you need to consume approximately ${bmrForLoss.toFixed(2)} calories per day.</p>
+                <p>To gain weight consistently, you need to consume approximately ${bmrForGain.toFixed(2)} calories per day.</p>
+            `;
+        });
+    </script>
+</body>
+</html>
